@@ -85,6 +85,26 @@ unsigned long requestDueTime;               //time when request due
 // SETUP
 //----------------------------------------------------------------------------------------------------------------
 
+const int WIDTH = 480;   // Screen width
+const int HEIGHT = 320;   // Screen height
+
+const int H_WIDTH = WIDTH/2;   // Half Screen width
+const int H_HEIGHT = HEIGHT/2;  // Half Screen height
+
+const int progressBarYOffset = 270;
+const int buttonsYOffset = 200;
+
+const char* songName;
+const char* artistName;
+
+long progress = 0;
+long duration = 60000 * 3;
+
+bool isPlaying = true;
+bool shuffleOn =  true;
+bool repeatOn = true;
+
+
 void setup()
 {
 
@@ -128,11 +148,7 @@ void setup()
 }
 
 
-const char* songName;
-const char* artistName;
-bool isPlaying;
-long progress;
-long duration;
+
 
 void printCurrentlyPlayingToSerial(CurrentlyPlaying currentlyPlaying)
 {
@@ -157,6 +173,7 @@ void printCurrentlyPlayingToSerial(CurrentlyPlaying currentlyPlaying)
 
     songName = currentlyPlaying.trackName;
     isPlaying = currentlyPlaying.isPlaying;
+    
 
     // Serial.print("Track URI: ");
     // Serial.println(currentlyPlaying.trackUri);
@@ -222,8 +239,107 @@ void printCurrentlyPlayingToSerial(CurrentlyPlaying currentlyPlaying)
     // Serial.println("------------------------");
 }
 
+void printPlayerDetailsToSerial(PlayerDetails playerDetails)
+{
+    // Serial.println("--------- Player Details ---------");
 
-const int progressBarYOffset = 270;
+    // Serial.print("Device ID: ");
+    // Serial.println(playerDetails.device.id);
+
+    // Serial.print("Device Name: ");
+    // Serial.println(playerDetails.device.name);
+
+    // Serial.print("Device Type: ");
+    // Serial.println(playerDetails.device.type);
+
+    // Serial.print("Is Active: ");
+    // if (playerDetails.device.isActive)
+    // {
+    //     Serial.println("Yes");
+    // }
+    // else
+    // {
+    //     Serial.println("No");
+    // }
+
+    // Serial.print("Is Resticted: ");
+    // if (playerDetails.device.isRestricted)
+    // {
+    //     Serial.println("Yes, from API docs \"no Web API commands will be accepted by this device\"");
+    // }
+    // else
+    // {
+    //     Serial.println("No");
+    // }
+
+    // Serial.print("Is Private Session: ");
+    // if (playerDetails.device.isPrivateSession)
+    // {
+    //     Serial.println("Yes");
+    // }
+    // else
+    // {
+    //     Serial.println("No");
+    // }
+
+    // Serial.print("Volume Percent: ");
+    // Serial.println(playerDetails.device.volumePercent);
+
+    // Serial.print("Progress (Ms): ");
+    // Serial.println(playerDetails.progressMs);
+
+    // Serial.print("Is Playing: ");
+    // if (playerDetails.isPlaying)
+    // {
+    //     Serial.println("Yes");
+    // }
+    // else
+    // {
+    //     Serial.println("No");
+    // }
+  
+
+    // Serial.print("Shuffle State: ");
+    // if (playerDetails.shuffleState)
+    // {
+    //     Serial.println("On");
+    // }
+    // else
+    // {
+    //     Serial.println("Off");
+    // }
+        shuffleOn = playerDetails.shuffleState;
+
+    // Serial.print("Repeat State: ");
+    // switch (playerDetails.repeateState)
+    // {
+    // case repeat_track:
+    //     Serial.println("track");
+    //     break;
+    // case repeat_context:
+    //     Serial.println("context");
+    //     break;
+    // case repeat_off:
+    //     Serial.println("off");
+    //     break;
+    // }
+
+    switch (playerDetails.repeateState)
+    {
+    case repeat_track:
+        repeatOn = true;
+        break;
+    case repeat_context:
+        repeatOn = true;
+        break;
+    case repeat_off:
+        repeatOn = false;
+        break;
+    }
+
+    // Serial.println("------------------------");
+}
+
 
 //----------------------------------------------------------------------------------------------------------------
 // LOOP
@@ -239,22 +355,25 @@ void loop()
 
         Serial.println("getting currently playing song:");
         // Market can be excluded if you want e.g. spotify.getCurrentlyPlaying()
-        int status = spotify.getCurrentlyPlaying(printCurrentlyPlayingToSerial, SPOTIFY_MARKET);
-        if (status == 200)
-        {
-            Serial.println("Successfully got currently playing");
-        }
-        else if (status == 204)
-        {
-            Serial.println("Doesn't seem to be anything playing");
-        }
-        else
-        {
-            Serial.print("Error: ");
-            Serial.println(status);
-        }
+        
+        spotify.getPlayerDetails(printPlayerDetailsToSerial, SPOTIFY_MARKET);
+        spotify.getCurrentlyPlaying(printCurrentlyPlayingToSerial, SPOTIFY_MARKET);
+        
+        //int player_status = spotify.getPlayerDetails(printPlayerDetailsToSerial, SPOTIFY_MARKET);
+        // if (status == 200)
+        // {
+        //     Serial.println("Successfully got currently playing");
+        // }
+        // else if (status == 204)
+        // {
+        //     Serial.println("Doesn't seem to be anything playing");
+        // }
+        // else
+        // {
+        //     Serial.print("Error: ");
+        //     Serial.println(status);
+        // }
         requestDueTime = millis() + delayBetweenRequests;
-
 
         //LCD CONTOL=====================================================================================================
         tft.fillRectVGradient(0, 0, 480, 320, tft.color565(10, 10, 7), tft.color565(26, 65, 1) );
@@ -264,13 +383,13 @@ void loop()
         tft.setTextFont(4);
         tft.setTextColor(TFT_WHITE);  
         tft.setTextSize(2);
-        tft.drawString("Song Name", 30, 50);
+        tft.drawString(songName, 30, 50);
 
         //Artist Name
         tft.setTextFont(4);
         tft.setTextColor(TFT_LIGHTGREY);  
         tft.setTextSize(1.5);
-        tft.drawString("First Artist - Second Artist", 30, 110);
+        tft.drawString(artistName, 30, 110);
 
         //Play button
         tft.fillSmoothCircle(240, buttonsYOffset, 40, TFT_WHITE);
@@ -283,11 +402,11 @@ void loop()
 
 
         //Next Button
-        tft.fillTriangle(H_WIDTH + 100, buttonsYOffset-20, H_WIDTH + 100, buttonsYOffset+20, 260 + 100, buttonsYOffset, TFT_WHITE);
+        tft.fillTriangle(H_WIDTH + 90, buttonsYOffset-20, H_WIDTH + 90, buttonsYOffset+20, H_WIDTH + 120, buttonsYOffset, TFT_WHITE);
         tft.fillRect(260 + 97, buttonsYOffset - 20, 5, 40, TFT_WHITE);
 
         //Previous Button
-        tft.fillTriangle(H_WIDTH - 80, buttonsYOffset-20, H_WIDTH - 80, buttonsYOffset+20, 260 - 140, 200, TFT_WHITE);
+        tft.fillTriangle(H_WIDTH - 10 - 80, buttonsYOffset-20, H_WIDTH - 10 - 80, buttonsYOffset+20, H_WIDTH + 20 - 140, 200, TFT_WHITE);
         tft.fillRect(260 - 140, buttonsYOffset - 20, 5, 40, TFT_WHITE);
 
         //Shuffle button
