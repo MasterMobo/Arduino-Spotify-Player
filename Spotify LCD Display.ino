@@ -393,48 +393,48 @@ void loop()
             tft.fillRect(H_WIDTH - 11, buttonsYOffset - 12, 22, 24, tft.color565(0, 51, 0));    // Pause bars
             tft.fillRect(H_WIDTH - 3, buttonsYOffset - 12, 6, 24, TFT_WHITE);
           } else {
-            tft.fillTriangle(H_WIDTH - 10 + 2, buttonsYOffset-17, H_WIDTH - 10 + 2, buttonsYOffset+17, H_WIDTH + 13 + 2, buttonsYOffset, tft.color565(0, 51, 0));    // Play arrow
+            tft.fillTriangle(H_WIDTH - 8, buttonsYOffset-17, H_WIDTH - 8, buttonsYOffset+17, H_WIDTH + 15, buttonsYOffset, tft.color565(0, 51, 0));    // Play arrow
           }
 
 
           // Next Button
-          tft.fillTriangle(H_WIDTH + 50, buttonsYOffset-17, H_WIDTH + 50, buttonsYOffset+17, H_WIDTH + 50 + 25, buttonsYOffset, TFT_WHITE);
-          tft.fillRect(H_WIDTH + 50 + 22, buttonsYOffset - 15, 5, 30, TFT_WHITE);
+          tft.fillTriangle(H_WIDTH + 50, buttonsYOffset-17, H_WIDTH + 50, buttonsYOffset+17, H_WIDTH + 75, buttonsYOffset, TFT_WHITE);
+          tft.fillRect(H_WIDTH + 72, buttonsYOffset - 15, 5, 30, TFT_WHITE);
 
           //Previous Button
-          tft.fillTriangle(H_WIDTH - 50, buttonsYOffset-17, H_WIDTH - 50, buttonsYOffset+17, H_WIDTH - 50 - 25, buttonsYOffset, TFT_WHITE);
-          tft.fillRect(H_WIDTH - 50 - 25, buttonsYOffset - 15, 5, 30, TFT_WHITE);
+          tft.fillTriangle(H_WIDTH - 50, buttonsYOffset-17, H_WIDTH - 50, buttonsYOffset+17, H_WIDTH - 75, buttonsYOffset, TFT_WHITE);
+          tft.fillRect(H_WIDTH - 75, buttonsYOffset - 15, 5, 30, TFT_WHITE);
 
           //Shuffle button
           if (shuffleOn){
-            tft.fillRect(15, buttonsYOffset + 18 - 10 - 20, 35, 5, TFT_GREEN);
-            tft.fillTriangle(15 + 35, buttonsYOffset + 15 - 10 - 20 + 7, 15 + 35, buttonsYOffset + 15 - 10 - 20 + 7 - 10,  15 + 35 + 10, buttonsYOffset + 15 - 10 - 20 + 7, TFT_GREEN);
+            tft.fillRect(15, buttonsYOffset -12, 35, 5, TFT_GREEN);
+            tft.fillTriangle(50, buttonsYOffset -8, 50, buttonsYOffset -18,  60, buttonsYOffset -8, TFT_GREEN);
 
-            tft.fillRect(15 + 10, buttonsYOffset + 15 - 10, 35, 5, TFT_GREEN);
-            tft.fillTriangle(15, buttonsYOffset + 15 - 10, 15 + 10, buttonsYOffset + 15 - 10, 15 + 10, buttonsYOffset + 25 - 10, TFT_GREEN);
+            tft.fillRect(25, buttonsYOffset + 5, 35, 5, TFT_GREEN);
+            tft.fillTriangle(15, buttonsYOffset + 5, 25, buttonsYOffset + 5, 25, buttonsYOffset + 15, TFT_GREEN);
 
-            tft.fillCircle(30 + 10, buttonsYOffset + 30, 3, TFT_GREEN);
+            tft.fillCircle(40, buttonsYOffset + 30, 3, TFT_GREEN);
           } else {
-            tft.fillRect(15, buttonsYOffset + 18 - 10 - 20, 35, 5, TFT_WHITE);
-            tft.fillTriangle(15 + 35, buttonsYOffset + 15 - 10 - 20 + 7, 15 + 35, buttonsYOffset + 15 - 10 - 20 + 7 - 10,  15 + 35 + 10, buttonsYOffset + 15 - 10 - 20 + 7, TFT_WHITE);
+            tft.fillRect(15, buttonsYOffset -12, 35, 5, TFT_WHITE);
+            tft.fillTriangle(50, buttonsYOffset -8, 50, buttonsYOffset -18,  60, buttonsYOffset -8, TFT_WHITE);
 
-            tft.fillRect(15 + 10, buttonsYOffset + 15 - 10, 35, 5, TFT_WHITE);
-            tft.fillTriangle(15, buttonsYOffset + 15 - 10, 15 + 10, buttonsYOffset + 15 - 10, 15 + 10, buttonsYOffset + 25 - 10, TFT_WHITE);
+            tft.fillRect(25, buttonsYOffset + 5, 35, 5, TFT_WHITE);
+            tft.fillTriangle(15, buttonsYOffset + 5, 25, buttonsYOffset + 5, 25, buttonsYOffset + 15, TFT_WHITE);
           }
 
           // Repeat button
           // tft.fillRect(WIDTH - 80, buttonsYOffset - 20, 50, 40, TFT_WHITE);
           if (repeatOn){
-            tft.fillSmoothRoundRect(WIDTH - 80 + 20, buttonsYOffset - 20 + 2, 50 - 5, 40 - 5, 5, TFT_GREEN);
-            tft.fillSmoothRoundRect(WIDTH - 75 + 20, buttonsYOffset - 15 + 2, 40 - 5, 30 - 5, 5, tft.color565(0, 51, 0));
-            tft.fillRect(WIDTH - 80 + 15 + 20, buttonsYOffset - 20 + 10 + 2, 15 - 5, 30 - 5, tft.color565(0, 51, 0));
-            tft.fillTriangle(WIDTH - 80 + 20 + 20, buttonsYOffset - 20 + 37 - 5 + 2, WIDTH - 80 + 20 + 7 + 20, buttonsYOffset - 20 + 37 + 7 - 5 + 2, WIDTH - 80 + 20 + 7 + 20, buttonsYOffset - 20 + 37 - 7 - 5 + 2, TFT_GREEN);
-            tft.fillCircle(WIDTH - 80 + 40, buttonsYOffset + 30 + 3, 3, TFT_GREEN);
+            tft.fillSmoothRoundRect(WIDTH - 60, buttonsYOffset - 18,45, 35, 5, TFT_GREEN);
+            tft.fillSmoothRoundRect(WIDTH - 55, buttonsYOffset - 13, 35, 25, 5, tft.color565(0, 51, 0));
+            tft.fillRect(WIDTH - 45, buttonsYOffset - 8, 10, 25, tft.color565(0, 51, 0));
+            tft.fillTriangle(WIDTH - 40, buttonsYOffset +14, WIDTH - 33, buttonsYOffset +21, WIDTH - 33, buttonsYOffset +7, TFT_GREEN);
+            tft.fillCircle(WIDTH - 40, buttonsYOffset + 33, 3, TFT_GREEN);
           } else {
-          tft.fillSmoothRoundRect(WIDTH - 80 + 20, buttonsYOffset - 20 + 2, 50 - 5, 40 - 5, 5, TFT_WHITE);
-            tft.fillSmoothRoundRect(WIDTH - 75 + 20, buttonsYOffset - 15 + 2, 40 - 5, 30 - 5, 5, tft.color565(0, 51, 0));
-            tft.fillRect(WIDTH - 80 + 15 + 20, buttonsYOffset - 20 + 10 + 2, 15 - 5, 30 - 5, tft.color565(0, 51, 0));
-            tft.fillTriangle(WIDTH - 80 + 20 + 20, buttonsYOffset - 20 + 37 - 5 + 2, WIDTH - 80 + 20 + 7 + 20, buttonsYOffset - 20 + 37 + 7 - 5 + 2, WIDTH - 80 + 20 + 7 + 20, buttonsYOffset - 20 + 37 - 7 - 5 + 2, TFT_WHITE);
+          tft.fillSmoothRoundRect(WIDTH - 60, buttonsYOffset - 18, 45, 35, 5, TFT_WHITE);
+            tft.fillSmoothRoundRect(WIDTH - 55, buttonsYOffset - 13, 35, 25, 5, tft.color565(0, 51, 0));
+            tft.fillRect(WIDTH - 45, buttonsYOffset - 20 + 10 + 2, 15 - 5, 30 - 5, tft.color565(0, 51, 0));
+            tft.fillTriangle(WIDTH - 40, buttonsYOffset +14, WIDTH -33, buttonsYOffset +21, WIDTH - 33, buttonsYOffset +7, TFT_WHITE);
           }
 
 
