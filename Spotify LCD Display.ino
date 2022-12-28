@@ -77,7 +77,7 @@ char clientSecret[] = "87d31dd4ffea4ad2b72bdbe2b93b227e"; // Your client Secret 
 WiFiClientSecure client;
 SpotifyArduino spotify(client, clientId, clientSecret, SPOTIFY_REFRESH_TOKEN);
 
-unsigned long delayBetweenRequests = 1000; // Time between requests (miliseconds)
+unsigned long delayBetweenRequests = 500; // Time between requests (miliseconds)
 unsigned long requestDueTime;               //time when request due
 
 
@@ -85,14 +85,14 @@ unsigned long requestDueTime;               //time when request due
 // SETUP
 //----------------------------------------------------------------------------------------------------------------
 
-const int WIDTH = 480;   // Screen width
-const int HEIGHT = 320;   // Screen height
+const int WIDTH = 320;   // Screen width
+const int HEIGHT = 240;   // Screen height
 
 const int H_WIDTH = WIDTH/2;   // Half Screen width
 const int H_HEIGHT = HEIGHT/2;  // Half Screen height
 
-const int progressBarYOffset = 270;
-const int buttonsYOffset = 200;
+const int progressBarYOffset = 210;
+const int buttonsYOffset = 150;
 
 const char* songName;
 const char* artistName;
@@ -110,7 +110,7 @@ void setup()
 
     Serial.begin(115200);
     tft.init();
-    tft.setRotation(1);
+    tft.setRotation(3);
 
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
@@ -136,9 +136,6 @@ void setup()
 #endif
     // ... or don't!
     //client.setInsecure();
-
-    // If you want to enable some extra debugging
-    // uncomment the "#define SPOTIFY_DEBUG" in SpotifyArduino.h
 
     Serial.println("Refreshing Access Tokens");
     if (!spotify.refreshAccessToken())
@@ -354,11 +351,10 @@ void loop()
         Serial.println(ESP.getFreeHeap());
 
         Serial.println("getting currently playing song:");
-        // Market can be excluded if you want e.g. spotify.getCurrentlyPlaying()
         
         spotify.getPlayerDetails(printPlayerDetailsToSerial, SPOTIFY_MARKET);
         spotify.getCurrentlyPlaying(printCurrentlyPlayingToSerial, SPOTIFY_MARKET);
-        
+
         //int player_status = spotify.getPlayerDetails(printPlayerDetailsToSerial, SPOTIFY_MARKET);
         // if (status == 200)
         // {
@@ -376,88 +372,93 @@ void loop()
         requestDueTime = millis() + delayBetweenRequests;
 
         //LCD CONTOL=====================================================================================================
-        tft.fillRectVGradient(0, 0, 480, 320, tft.color565(10, 10, 7), tft.color565(26, 65, 1) );
+          tft.fillRectVGradient(0, 0, 320, 240, tft.color565(10, 10, 7), tft.color565(26, 65, 1) );
 
 
-        //Song name
-        tft.setTextFont(4);
-        tft.setTextColor(TFT_WHITE);  
-        tft.setTextSize(2);
-        tft.drawString(songName, 30, 50);
+          //Song name
+          tft.setTextFont(4);
+          tft.setTextColor(TFT_WHITE);  
+          tft.setTextSize(2);
+          tft.drawString(songName, 20, 20);
 
-        //Artist Name
-        tft.setTextFont(4);
-        tft.setTextColor(TFT_LIGHTGREY);  
-        tft.setTextSize(1.5);
-        tft.drawString(artistName, 30, 110);
+          //Artist Name
+          tft.setTextFont(4);
+          tft.setTextColor(TFT_LIGHTGREY);  
+          tft.setTextSize(1);
+          tft.drawString(artistName, 20, 80);
 
-        //Play button
-        tft.fillSmoothCircle(240, buttonsYOffset, 40, TFT_WHITE);
-        if (isPlaying){
-          tft.fillRect(H_WIDTH - 15, H_HEIGHT + 22, 30, 36, tft.color565(0, 51, 0));    // Pause bar
-          tft.fillRect(H_WIDTH - 5, H_HEIGHT + 20, 10, 40, TFT_WHITE);
-        } else {
-          tft.fillTriangle(230, buttonsYOffset-20, 230, buttonsYOffset+20, 260, buttonsYOffset, tft.color565(0, 51, 0));    // Play arrow
-        }
-
-
-        //Next Button
-        tft.fillTriangle(H_WIDTH + 90, buttonsYOffset-20, H_WIDTH + 90, buttonsYOffset+20, H_WIDTH + 120, buttonsYOffset, TFT_WHITE);
-        tft.fillRect(260 + 97, buttonsYOffset - 20, 5, 40, TFT_WHITE);
-
-        //Previous Button
-        tft.fillTriangle(H_WIDTH - 10 - 80, buttonsYOffset-20, H_WIDTH - 10 - 80, buttonsYOffset+20, H_WIDTH + 20 - 140, 200, TFT_WHITE);
-        tft.fillRect(260 - 140, buttonsYOffset - 20, 5, 40, TFT_WHITE);
-
-        //Shuffle button
-        if (shuffleOn){
-          tft.fillRect(30, buttonsYOffset-15, 50, 30, TFT_GREEN);
-          tft.fillRect(30, buttonsYOffset-10, 50, 20, tft.color565(0, 51, 0));
-          tft.fillTriangle(25, buttonsYOffset-17 + 34 - 4, 32, buttonsYOffset-17 + 34 - 4 - 7, 32, buttonsYOffset-17 + 34 - 4 + 7, TFT_GREEN); // Bottom left arrow
-          tft.fillTriangle(30 + 50 + 5, buttonsYOffset-17 + 3, 30 + 47, buttonsYOffset-17 + 3 - 7, 30 + 47, buttonsYOffset-17 + 3 + 8, TFT_GREEN); // Top right arrow
-          tft.fillCircle(30 + 25, buttonsYOffset + 30 + 5, 4, TFT_GREEN);
-        } else {
-          tft.fillRect(30, buttonsYOffset-15, 50, 30, TFT_WHITE);
-          tft.fillRect(30, buttonsYOffset-10, 50, 20, tft.color565(0, 51, 0));
-          tft.fillTriangle(25, buttonsYOffset-17 + 34 - 4, 32, buttonsYOffset-17 + 34 - 4 - 7, 32, buttonsYOffset-17 + 34 - 4 + 7, TFT_WHITE); // Bottom left arrow
-          tft.fillTriangle(30 + 50 + 5, buttonsYOffset-17 + 3, 30 + 47, buttonsYOffset-17 + 3 - 7, 30 + 47, buttonsYOffset-17 + 3 + 8, TFT_WHITE); // Top right arrow
-        }
-
-        // Repeat button
-        // tft.fillRect(WIDTH - 80, buttonsYOffset - 20, 50, 40, TFT_WHITE);
-        if (repeatOn){
-          tft.fillRoundRect(WIDTH - 80, buttonsYOffset - 20, 50, 40, 5, TFT_GREEN);
-          tft.fillRoundRect(WIDTH - 75, buttonsYOffset - 15, 40, 30, 5, tft.color565(0, 51, 0));
-          tft.fillRect(WIDTH - 80 + 15, buttonsYOffset - 20 + 10, 10, 30, tft.color565(0, 51, 0));
-          tft.fillTriangle(WIDTH - 80 + 20, buttonsYOffset - 20 + 37, WIDTH - 80 + 20 + 7, buttonsYOffset - 20 + 37 + 7, WIDTH - 80 + 20 + 7, buttonsYOffset - 20 + 37 - 7, TFT_GREEN);
-          tft.fillCircle(WIDTH - 80 + 25, buttonsYOffset + 30 + 5, 4, TFT_GREEN);
-        } else {
-          tft.fillRoundRect(WIDTH - 80, buttonsYOffset - 20, 50, 40, 5, TFT_WHITE);
-          tft.fillRoundRect(WIDTH - 75, buttonsYOffset - 15, 40, 30, 5, tft.color565(0, 51, 0));
-          tft.fillRect(WIDTH - 80 + 15, buttonsYOffset - 20 + 10, 10, 30, tft.color565(0, 51, 0));
-          tft.fillTriangle(WIDTH - 80 + 20, buttonsYOffset - 20 + 37, WIDTH - 80 + 20 + 7, buttonsYOffset - 20 + 37 + 7, WIDTH - 80 + 20 + 7, buttonsYOffset - 20 + 37 - 7, TFT_WHITE);
-        }
+          //Play button
+          tft.fillSmoothCircle(H_WIDTH, buttonsYOffset, 27, TFT_WHITE);
+          if (isPlaying){
+            tft.fillRect(H_WIDTH - 11, buttonsYOffset - 12, 22, 24, tft.color565(0, 51, 0));    // Pause bars
+            tft.fillRect(H_WIDTH - 3, buttonsYOffset - 12, 6, 24, TFT_WHITE);
+          } else {
+            tft.fillTriangle(H_WIDTH - 10 + 2, buttonsYOffset-17, H_WIDTH - 10 + 2, buttonsYOffset+17, H_WIDTH + 13 + 2, buttonsYOffset, tft.color565(0, 51, 0));    // Play arrow
+          }
 
 
-        // Song Progress
-        tft.setTextSize(1);
-        tft.setCursor(40, progressBarYOffset - 10);
-        tft.print((progress / 1000) / 60);
-        tft.print(":");
-        tft.print((progress / 1000) % 60);
+          // Next Button
+          tft.fillTriangle(H_WIDTH + 50, buttonsYOffset-17, H_WIDTH + 50, buttonsYOffset+17, H_WIDTH + 50 + 25, buttonsYOffset, TFT_WHITE);
+          tft.fillRect(H_WIDTH + 50 + 22, buttonsYOffset - 15, 5, 30, TFT_WHITE);
 
-        // Song Duration
-        tft.setCursor(390, progressBarYOffset - 10);
-        tft.print((duration / 1000) / 60);
-        tft.print(":");
-        tft.print((duration / 1000) % 60);
+          //Previous Button
+          tft.fillTriangle(H_WIDTH - 50, buttonsYOffset-17, H_WIDTH - 50, buttonsYOffset+17, H_WIDTH - 50 - 25, buttonsYOffset, TFT_WHITE);
+          tft.fillRect(H_WIDTH - 50 - 25, buttonsYOffset - 15, 5, 30, TFT_WHITE);
 
-        //Progress bar
-        float barWidth = 380 - 100;
-        float xPos = barWidth*progress/duration;
-        tft.drawFastHLine(100, progressBarYOffset, barWidth, TFT_DARKGREY);
-        tft.drawFastHLine(100, progressBarYOffset, xPos, TFT_WHITE);
-        tft.fillCircle(xPos + 100,progressBarYOffset,10, TFT_WHITE);
+          //Shuffle button
+          if (shuffleOn){
+            tft.fillRect(15, buttonsYOffset + 18 - 10 - 20, 35, 5, TFT_GREEN);
+            tft.fillTriangle(15 + 35, buttonsYOffset + 15 - 10 - 20 + 7, 15 + 35, buttonsYOffset + 15 - 10 - 20 + 7 - 10,  15 + 35 + 10, buttonsYOffset + 15 - 10 - 20 + 7, TFT_GREEN);
+
+            tft.fillRect(15 + 10, buttonsYOffset + 15 - 10, 35, 5, TFT_GREEN);
+            tft.fillTriangle(15, buttonsYOffset + 15 - 10, 15 + 10, buttonsYOffset + 15 - 10, 15 + 10, buttonsYOffset + 25 - 10, TFT_GREEN);
+
+            tft.fillCircle(30 + 10, buttonsYOffset + 30, 3, TFT_GREEN);
+          } else {
+            tft.fillRect(15, buttonsYOffset + 18 - 10 - 20, 35, 5, TFT_WHITE);
+            tft.fillTriangle(15 + 35, buttonsYOffset + 15 - 10 - 20 + 7, 15 + 35, buttonsYOffset + 15 - 10 - 20 + 7 - 10,  15 + 35 + 10, buttonsYOffset + 15 - 10 - 20 + 7, TFT_WHITE);
+
+            tft.fillRect(15 + 10, buttonsYOffset + 15 - 10, 35, 5, TFT_WHITE);
+            tft.fillTriangle(15, buttonsYOffset + 15 - 10, 15 + 10, buttonsYOffset + 15 - 10, 15 + 10, buttonsYOffset + 25 - 10, TFT_WHITE);
+          }
+
+          // Repeat button
+          // tft.fillRect(WIDTH - 80, buttonsYOffset - 20, 50, 40, TFT_WHITE);
+          if (repeatOn){
+            tft.fillSmoothRoundRect(WIDTH - 80 + 20, buttonsYOffset - 20 + 2, 50 - 5, 40 - 5, 5, TFT_GREEN);
+            tft.fillSmoothRoundRect(WIDTH - 75 + 20, buttonsYOffset - 15 + 2, 40 - 5, 30 - 5, 5, tft.color565(0, 51, 0));
+            tft.fillRect(WIDTH - 80 + 15 + 20, buttonsYOffset - 20 + 10 + 2, 15 - 5, 30 - 5, tft.color565(0, 51, 0));
+            tft.fillTriangle(WIDTH - 80 + 20 + 20, buttonsYOffset - 20 + 37 - 5 + 2, WIDTH - 80 + 20 + 7 + 20, buttonsYOffset - 20 + 37 + 7 - 5 + 2, WIDTH - 80 + 20 + 7 + 20, buttonsYOffset - 20 + 37 - 7 - 5 + 2, TFT_GREEN);
+            tft.fillCircle(WIDTH - 80 + 40, buttonsYOffset + 30 + 3, 3, TFT_GREEN);
+          } else {
+          tft.fillSmoothRoundRect(WIDTH - 80 + 20, buttonsYOffset - 20 + 2, 50 - 5, 40 - 5, 5, TFT_WHITE);
+            tft.fillSmoothRoundRect(WIDTH - 75 + 20, buttonsYOffset - 15 + 2, 40 - 5, 30 - 5, 5, tft.color565(0, 51, 0));
+            tft.fillRect(WIDTH - 80 + 15 + 20, buttonsYOffset - 20 + 10 + 2, 15 - 5, 30 - 5, tft.color565(0, 51, 0));
+            tft.fillTriangle(WIDTH - 80 + 20 + 20, buttonsYOffset - 20 + 37 - 5 + 2, WIDTH - 80 + 20 + 7 + 20, buttonsYOffset - 20 + 37 + 7 - 5 + 2, WIDTH - 80 + 20 + 7 + 20, buttonsYOffset - 20 + 37 - 7 - 5 + 2, TFT_WHITE);
+          }
+
+
+
+          // Song Progress
+          tft.setTextFont(2);
+          tft.setTextSize(1);
+          tft.setCursor(24, progressBarYOffset - 9);
+          tft.print((progress / 1000) / 60);
+          tft.print(":");
+          tft.print((progress / 1000) % 60);
+
+          // Song Duration
+          tft.setCursor(WIDTH-50, progressBarYOffset - 9);
+          tft.print((duration / 1000) / 60);
+          tft.print(":");
+          tft.print((duration / 1000) % 60);
+
+          //Progress bar
+          float barWidth = WIDTH - 120;
+          float xPos = barWidth*progress/duration;
+          tft.drawFastHLine(60, progressBarYOffset, barWidth, TFT_DARKGREY);
+          tft.drawFastHLine(60, progressBarYOffset, xPos, TFT_WHITE);
+          tft.fillCircle(xPos + 60,progressBarYOffset,5, TFT_WHITE);
       //TOUCH CONTROL------------------------------------------------------------------------
         uint16_t x, y;
 
