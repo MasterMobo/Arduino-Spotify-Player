@@ -44,23 +44,43 @@ def main():
     arduino_message = ser.readline().decode("utf-8").strip()
     print(arduino_message)
     
-    match arduino_message:
-        case "pause":
-            spotify.pause_playback()
-        case "play":
-            spotify.start_playback()
-        case "prev":
-            spotify.previous_track()
-        case "next":
-            spotify.next_track()
-        case "shuffleOn":
-            spotify.shuffle(True)
-        case "shuffleOff":
-            spotify.shuffle(False)
-        case "repeatOn":
-            spotify.repeat("track")
-        case "repeatOff":
-            spotify.repeat("off")
+    if arduino_message == "pause":
+        spotify.pause_playback()
+    if arduino_message == "play":
+        spotify.start_playback()
+    if arduino_message == "prev":
+        spotify.previous_track()
+    if arduino_message == "next":
+        spotify.next_track()
+    if arduino_message == "shuffleOn":
+        spotify.shuffle(True)
+    if arduino_message == "shuffleOff":
+        spotify.shuffle(False)
+    if arduino_message == "repeatOn":
+        spotify.repeat("track")
+    if arduino_message == "repeatOff":
+        spotify.repeat("off")
+        
+        
+        
+        
+    # match arduino_message:
+    #     case "pause":
+    #         spotify.pause_playback()
+    #     case "play":
+    #         spotify.start_playback()
+    #     case "prev":
+    #         spotify.previous_track()
+    #     case "next":
+    #         spotify.next_track()
+    #     case "shuffleOn":
+    #         spotify.shuffle(True)
+    #     case "shuffleOff":
+    #         spotify.shuffle(False)
+    #     case "repeatOn":
+    #         spotify.repeat("track")
+    #     case "repeatOff":
+    #         spotify.repeat("off")
 
 
 main()
