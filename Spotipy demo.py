@@ -21,16 +21,7 @@ def main():
 
     spotify = spotipy.Spotify(auth=token)
     current_playback = spotify.current_playback()
-
-    # spotify.pause_playback()
-    # sleep(5)
-
-    # spotify.previous_track()
-    # sleep(5)
-    # spotify.seek_track(50000)
-    # sleep(5)
-    # spotify.next_track()
-    # sleep(5)
+    
     
     # print("-------------------------------------------")
     # print("Is playing:", current_playback["is_playing"])
@@ -43,6 +34,7 @@ def main():
     # # pprint(current_playback)
     # print("-------------------------------------------")
     
+    # This is data being sent to the arduino 
     # Message format: songName > artistName @ isPlaying # progress $ duration % repeatState ^ shuffleState &
     message = current_playback["item"]["name"] + ">" + ', '.join([artist["name"] for artist in current_playback["item"]["album"]["artists"]]) + "@" + ("1" if current_playback["is_playing"] else "0") + "#" + str(current_playback["progress_ms"]) + "$" + str(current_playback["item"]["duration_ms"]) + "%" + ("0" if current_playback["repeat_state"] == "off" else "1") + "^" + ("1" if current_playback["shuffle_state"] else "0") + "&"
     # print(message)
@@ -52,9 +44,23 @@ def main():
     arduino_message = ser.readline().decode("utf-8").strip()
     print(arduino_message)
     
-    if arduino_message == "pause":
-        spotify.pause_playback()
-    if arduino_message == "play":
-        spotify.start_playback()
+    match arduino_message:
+        case "pause":
+            spotify.pause_playback()
+        case "play":
+            spotify.start_playback()
+        case "prev":
+            spotify.previous_track()
+        case "next":
+            spotify.next_track()
+        case "shuffleOn":
+            spotify.shuffle(True)
+        case "shuffleOff":
+            spotify.shuffle(False)
+        case "repeatOn":
+            spotify.repeat("track")
+        case "repeatOff":
+            spotify.repeat("off")
+
 
 main()
