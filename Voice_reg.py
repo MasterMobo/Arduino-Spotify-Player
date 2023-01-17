@@ -12,8 +12,32 @@ spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID, client_
 
 recognizer = speech_recognition.Recognizer()
 
+def shuffleCheck():
+    if "on" in words:
+        spotify.shuffle(True)
+    elif "off" in words:
+        spotify.shuffle(False)
+
+def repeatCheck():
+    if "off" in words or "stop" in words:
+        spotify.repeat("off")
+    elif "on" in words or "track" in words or "song" in words:
+        spotify.repeat("track")
+    elif "album" in words or "playlist" in words:
+        spotify.repeat("context")
 
 print("Finished Initializing!")
+commandLines = {
+    ["start", "continue"]: spotify.start_playback(),
+    ["stop", "pause"]:spotify.pause_playback(),
+    ["skip", "next"]:spotify.next_track(),
+    ["last", "previous", "go back"]:spotify.previous_track(),
+    "shuffle":shuffleCheck(),
+    ["repeat", "or"]:repeatCheck(),
+}
+
+
+
 
 while True:
     try:
@@ -21,29 +45,36 @@ while True:
             recognizer.adjust_for_ambient_noise(mic, duration=0.2)
             audio = recognizer.listen(mic)
             
-            words = recognizer.recognize_google(audio).lower()
+            words = recognizer.recognize_google(audio).lower() 
             
-            # Voice Commands
-            print("Recognized: ", words)
-            if "start" in words or "continue" in words:
-                spotify.start_playback()
-            elif "stop" in words or "pause" in words:
-                spotify.pause_playback()
-            elif "skip" in words or "next" in words:
-                spotify.next_track()
-            elif "last" in words or "previous" in words or "go back" in words:
-                spotify.previous_track()
-            elif "shuffle" in words and "on" in words:
-                spotify.shuffle(True)
-            elif "shuffle" in words and "off" in words:
-                spotify.shuffle(False)
-            elif "repeat" in words or "loop" in words:     # There are repeat 3 modes: off, track (repeat a single song), context (repeat a playlist/album) 
-                if "off" in words or "stop" in words:
-                    spotify.repeat("off")
-                elif "on" in words or "track" in words or "song" in words:
-                    spotify.repeat("track")
-                elif "album" in words or "playlist" in words:
-                    spotify.repeat("context")
+
+            for i in commandLines.keys():
+                if i in words:
+                    commandLines[i]
+
+
+
+            # # Voice Commands
+            # print("Recognized: ", words)
+            # if "start" in words or "continue" in words:
+            #     spotify.start_playback()
+            # elif "stop" in words or "pause" in words:
+            #     spotify.pause_playback()
+            # elif "skip" in words or "next" in words:
+            #     spotify.next_track()
+            # elif "last" in words or "previous" in words or "go back" in words:
+            #     spotify.previous_track()
+            # elif "shuffle" in words and "on" in words:
+            #     spotify.shuffle(True)
+            # elif "shuffle" in words and "off" in words:
+            #     spotify.shuffle(False)
+            # elif "repeat" in words or "loop" in words:     # There are repeat 3 modes: off, track (repeat a single song), context (repeat a playlist/album) 
+            #     if "off" in words or "stop" in words:
+            #         spotify.repeat("off")
+            #     elif "on" in words or "track" in words or "song" in words:
+            #         spotify.repeat("track")
+            #     elif "album" in words or "playlist" in words:
+            #         spotify.repeat("context")
             
     except:
         recognizer = speech_recognition.Recognizer()
