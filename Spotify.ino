@@ -250,7 +250,7 @@ void loop() {
             tft.setTextColor(0xFFFF,0x0000);  
             tft.setTextSize(9);
             tft.setCursor(-34, 30);
-            tft.println(" " + songName + "         ");
+            tft.println(" " + songName + "                    ");
           }
           else
           {
@@ -272,7 +272,7 @@ void loop() {
             tft.setTextColor(0xC618,0x0000);  
             tft.setTextSize(3);
             tft.setCursor(23, 108);
-            tft.println(artistName + "               ");
+            tft.println(artistName + "                        ");
 
 
 
