@@ -79,7 +79,7 @@ long duration = 60000;
 
 bool isPlaying = false;
 bool shuffleOn = true;
-String repeatMode = "off";
+String repeatMode = "track";
 
 
 void setup() {
@@ -96,6 +96,7 @@ void setup() {
 
   //tft.setTextPadding(WIDTH);
   pinMode(13, OUTPUT);
+  updateData();
   fillShuffleButton();
   fillPlayButton();
   fillRepeatButton();
@@ -149,64 +150,8 @@ int scrollOffset = 0;
 
 void loop() {
 
+      updateData();
 
-while(Serial.available() > 0){
-    char recieved = Serial.read();
-    inData += recieved;
-
-    if (recieved == '>'){
-      inData.remove(inData.length() - 1, 1);
-      songName = inData;
-      inData="";
-    }
-    if (recieved == '@'){
-      inData.remove(inData.length() - 1, 1);
-      artistName = inData;
-      inData="";
-    }
-    if (recieved == '#'){
-      inData.remove(inData.length() - 1, 1);
-      bool newPlayState;
-      newPlayState = (inData == "1");
-      if (isPlaying != newPlayState) {
-        fillPlayButton();
-        isPlaying = newPlayState;
-      } 
-      
-      inData="";
-    }
-    if (recieved == '$'){
-      inData.remove(inData.length() - 1, 1);
-      progress = inData.toInt();
-      inData="";
-    }
-    if (recieved == '%'){
-      
-      duration = inData.toInt();
-      inData="";
-    }
-    if (recieved == '^'){
-      inData.remove(inData.length() - 1, 1);
-      if (repeatMode != inData){
-        fillRepeatButton();
-      }
-      
-      repeatMode = inData;
-      inData="";
-    }
-    if (recieved == '&'){
-      inData.remove(inData.length() - 1, 1);
-      bool newShuffleState;
-      newShuffleState = (inData == "1");
-      if (shuffleOn != newShuffleState) {
-        fillShuffleButton();
-        shuffleOn = newShuffleState;
-      } 
-
-      inData="";
-    }
-  
-}
 
 
 
@@ -304,8 +249,8 @@ while(Serial.available() > 0){
           {
             tft.setTextColor(0xFFFF,0x0000);  
             tft.setTextSize(9);
-            tft.setCursor(20, 30);
-            tft.println(songName + "         ");
+            tft.setCursor(-34, 30);
+            tft.println(" " + songName + "         ");
           }
           else
           {
@@ -372,13 +317,13 @@ while(Serial.available() > 0){
 
 
           //Progress bar
-          //refresh bar
-          tft.fillRect(15,progressBarYOffset-10,barLength+5,20, TFT_BLACK);
-          //background bar
-          tft.fillRoundRect(15, progressBarYOffset - (barWidth / 2), barLength, barWidth, barWidth / 2,TFT_DARKGREY);
-          //progress bar
           float xPos = barLength*progress/duration;
-          tft.fillRoundRect(15, progressBarYOffset - (barWidth / 2), xPos, barWidth, barWidth / 2, TFT_WHITE);
+          //refresh bar
+          // tft.fillRect(15,progressBarYOffset-10,barLength+5,20, TFT_BLACK);
+          //background bar
+          tft.fillRoundRect(xPos + 15, progressBarYOffset - (barWidth / 2), barLength - xPos, barWidth, barWidth / 2,TFT_DARKGREY);
+          //progress bar
+          tft.fillRoundRect(15, progressBarYOffset - (barWidth / 2), xPos + 5, barWidth, barWidth / 2, TFT_WHITE);
 
 
 
@@ -457,6 +402,66 @@ void fillDiagonalLine(int startpointx, int startpointy, int length, int width, i
   // tft.print(A1y);
 }
 
+void updateData() {
+
+  while(Serial.available() > 0){
+    char recieved = Serial.read();
+    inData += recieved;
+
+    if (recieved == '>'){
+      inData.remove(inData.length() - 1, 1);
+      songName = inData;
+      inData="";
+    }
+    if (recieved == '@'){
+      inData.remove(inData.length() - 1, 1);
+      artistName = inData;
+      inData="";
+    }
+    if (recieved == '#'){
+      inData.remove(inData.length() - 1, 1);
+      bool newPlayState;
+      newPlayState = (inData == "1");
+      if (isPlaying != newPlayState) {
+        fillPlayButton();
+        isPlaying = newPlayState;
+      } 
+      
+      inData="";
+    }
+    if (recieved == '$'){
+      inData.remove(inData.length() - 1, 1);
+      progress = inData.toInt();
+      inData="";
+    }
+    if (recieved == '%'){
+      
+      duration = inData.toInt();
+      inData="";
+    }
+    if (recieved == '^'){
+      inData.remove(inData.length() - 1, 1);
+      if (repeatMode != inData){
+        fillRepeatButton();
+      }
+      
+      repeatMode = inData;
+      inData="";
+    }
+    if (recieved == '|'){
+      inData.remove(inData.length() - 1, 1);
+      bool newShuffleState;
+      newShuffleState = (inData == "1");
+      if (shuffleOn != newShuffleState) {
+        fillShuffleButton();
+        shuffleOn = newShuffleState;
+      } 
+
+      inData="";
+    }
+  
+}
+}
 
 //Function to print 2-digits minutes and seconds:
 void printDigits(int digits)
