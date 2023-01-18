@@ -150,7 +150,66 @@ int scrollOffset = 0;
 void loop() {
 
 
-        tft.setRotation(3);
+while(Serial.available() > 0){
+    char recieved = Serial.read();
+    inData += recieved;
+
+    if (recieved == '>'){
+      inData.remove(inData.length() - 1, 1);
+      songName = inData;
+      inData="";
+    }
+    if (recieved == '@'){
+      inData.remove(inData.length() - 1, 1);
+      artistName = inData;
+      inData="";
+    }
+    if (recieved == '#'){
+      inData.remove(inData.length() - 1, 1);
+      bool newPlayState;
+      newPlayState = (inData == "1");
+      if (isPlaying != newPlayState) {
+        fillPlayButton();
+        isPlaying = newPlayState;
+      } 
+      
+      inData="";
+    }
+    if (recieved == '$'){
+      inData.remove(inData.length() - 1, 1);
+      progress = inData.toInt();
+      inData="";
+    }
+    if (recieved == '%'){
+      
+      duration = inData.toInt();
+      inData="";
+    }
+    if (recieved == '^'){
+      inData.remove(inData.length() - 1, 1);
+      if (repeatMode != inData){
+        fillRepeatButton();
+      }
+      
+      repeatMode = inData;
+      inData="";
+    }
+    if (recieved == '&'){
+      inData.remove(inData.length() - 1, 1);
+      bool newShuffleState;
+      newShuffleState = (inData == "1");
+      if (shuffleOn != newShuffleState) {
+        fillShuffleButton();
+        shuffleOn = newShuffleState;
+      } 
+
+      inData="";
+    }
+  
+}
+
+
+
         //TOUCH CONTROL------------------------------------------------------------------------
         digitalWrite(13, HIGH);
         TSPoint p = ts.getPoint();
@@ -234,63 +293,7 @@ void loop() {
         }
 
   // Update song data:
-  while(Serial.available() > 0){
-    char recieved = Serial.read();
-    inData += recieved;
-
-    if (recieved == '>'){
-      inData.remove(inData.length() - 1, 1);
-      songName = inData;
-      inData="";
-    }
-    if (recieved == '@'){
-      inData.remove(inData.length() - 1, 1);
-      artistName = inData;
-      inData="";
-    }
-    if (recieved == '#'){
-      inData.remove(inData.length() - 1, 1);
-      bool newPlayState;
-      newPlayState = (inData == "1");
-      if (isPlaying != newPlayState) {
-        fillPlayButton();
-        isPlaying = newPlayState;
-      } 
-      
-      inData="";
-    }
-    if (recieved == '$'){
-      inData.remove(inData.length() - 1, 1);
-      progress = inData.toInt();
-      inData="";
-    }
-    if (recieved == '%'){
-      
-      duration = inData.toInt();
-      inData="";
-    }
-    if (recieved == '^'){
-      inData.remove(inData.length() - 1, 1);
-      if (repeatMode != inData){
-        fillRepeatButton();
-      }
-      
-      repeatMode = inData;
-      inData="";
-    }
-    if (recieved == '&'){
-      inData.remove(inData.length() - 1, 1);
-      bool newShuffleState;
-      newShuffleState = (inData == "1");
-      if (shuffleOn != newShuffleState) {
-        fillShuffleButton();
-        shuffleOn = newShuffleState;
-      } 
-
-      inData="";
-    }
   
-}
 //LCD CONTOL=====================================================================================================
           // tft.fillRectVGradient(0, 0, 320, 240, tft.color565(10, 10, 7), tft.color565(26, 65, 1) );
 
@@ -320,12 +323,15 @@ void loop() {
           }
 
 
-    
           //Artist Name
-          tft.setTextColor(0xC618,0x0000);  
-          tft.setTextSize(3);
-          tft.setCursor(23, 108);
-          tft.println(artistName + "               ");
+            tft.setTextColor(0xC618,0x0000);  
+            tft.setTextSize(3);
+            tft.setCursor(23, 108);
+            tft.println(artistName + "               ");
+
+
+
+
 
 
 
@@ -340,6 +346,12 @@ void loop() {
           tft.fillRect(previousButtonLineX, previousButtonLineY, previousButtonLineWidth, previousButtonLineLength, TFT_WHITE);
 
 
+
+
+
+
+
+          
 
           // Song Progress
           tft.setTextSize(2); 
