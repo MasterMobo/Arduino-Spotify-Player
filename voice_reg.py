@@ -23,10 +23,16 @@ def repeatCheck():
         spotify.repeat("context")
 
 def getSong():  # This function will slice the initial commands to get Artist - Song (Some songs have identical names)
-    command_lst = words[5:].split("by")
-    song = command_lst[0]
-    artist = command_lst[1]
-    track_id = spotify.search(q="artist:" + artist + " track:" + song, type="track")["tracks"]["items"][0]["id"]
+    if "by" in words:
+        command_lst = words[5:].split("by")
+        song = command_lst[0]
+        artist = command_lst[1]
+        track_id = spotify.search(q="artist:" + artist + " track:" + song, type="track")["tracks"]["items"][0]["id"]
+    else: 
+        command_lst = words[5:]
+        song = command_lst[0]
+        artist = command_lst[1]
+        track_id = spotify.search(q=" track:" + song, type="track")["tracks"]["items"][0]["id"]
     spotify.start_playback(uris=["spotify:track:{id}".format(id=track_id)])
 
 
