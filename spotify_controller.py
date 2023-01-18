@@ -49,7 +49,7 @@ while True:
     # Get current song data from API
     current_playback = spotify.current_playback()
     
-    if current_playback is None:
+    if current_playback == None:
         print("Doesn't seem to be playing anything")
         time.sleep(0.5)
         continue
@@ -58,9 +58,11 @@ while True:
     
     # Send song data to Arduino via serial 
     # Message format: songName > artistName @ isPlaying # progress $ duration % repeatState ^ shuffleState |
-    message = current_playback["item"]["name"] + ">" + ', '.join([artist["name"] for artist in current_playback["item"]["album"]["artists"]]) + "@" + ("1" if current_playback["is_playing"] else "0") + "#" + str(current_playback["progress_ms"]) + "$" + str(current_playback["item"]["duration_ms"]) + "%" + current_playback["repeat_state"] + "^" + ("1" if current_playback["shuffle_state"] else "0") + "|"
-    #print(message) # Uncomment this to debug
-    
+    try:
+        message = current_playback["item"]["name"] + ">" + ', '.join([artist["name"] for artist in current_playback["item"]["album"]["artists"]]) + "@" + ("1" if current_playback["is_playing"] else "0") + "#" + str(current_playback["progress_ms"]) + "$" + str(current_playback["item"]["duration_ms"]) + "%" + current_playback["repeat_state"] + "^" + ("1" if current_playback["shuffle_state"] else "0") + "|"
+    except:
+        print("Could not process current playback, I'll try again")
+        continue
 
     ser.write(bytes(message, "utf-8"))
     
@@ -74,6 +76,7 @@ while True:
         # Execute command corresponding to Arduino message
         try:
             commands[arduino_message]()
+            continue;
         except:
             print("Couldn't execute the command")
     

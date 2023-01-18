@@ -2,6 +2,7 @@
 import speech_recognition
 import sounddevice
 import spotipy
+from pprint import pprint
 from spotipy.oauth2 import SpotifyOAuth
 
 
@@ -23,18 +24,34 @@ def repeatCheck():
         spotify.repeat("context")
 
 def getSong():  # This function will slice the initial commands to get Artist - Song (Some songs have identical names)
+    global words
     if "by" in words:
         command_lst = words[5:].split("by")
         song = command_lst[0]
         artist = command_lst[1]
+        print(f"Searching for {song} by {artist}")
         track_id = spotify.search(q="artist:" + artist + " track:" + song, type="track")["tracks"]["items"][0]["id"]
+        spotify.start_playback(uris=["spotify:track:{id}".format(id=track_id)])
     else: 
-        command_lst = words[5:]
-        song = command_lst[0]
-        artist = command_lst[1]
-        track_id = spotify.search(q=" track:" + song, type="track")["tracks"]["items"][0]["id"]
-    spotify.start_playback(uris=["spotify:track:{id}".format(id=track_id)])
+        song = words[5:]
+        print(f"Searching for: {song}") 
+        track_id = spotify.search(q="track:" + song, type="track")["tracks"]["items"][0]["id"]
+        spotify.start_playback(uris=["spotify:track:{id}".format(id=track_id)])
 
+def getAlbum():
+    global words
+    if "by" in words:
+        command_lst = words[11:].split("by")
+        album = command_lst[0]
+        artist = command_lst[1]
+        print(f"Searching for album: {album} by {artist}")
+        album_id = spotify.search(q="artist:" + artist + " album:" + album, type="album")["albums"]["items"][0]["id"]
+        spotify.start_playback(context_uri="spotify:album:{id}".format(id=album_id))
+    else: 
+        album = words[11:]
+        print(f"Searching for album: {album}") 
+        album_id = spotify.search(q="album:" + album, type="album")["albums"]["items"][0]["id"]
+        spotify.start_playback(context_uri="spotify:album:{id}".format(id=album_id))
 
 CLIENT_ID = "55985fc6751c4c5ea97d044ebe0861ca"
 CLIENT_SECRET = "e680c5ac23264c0593a3ea15148b172d"
@@ -56,11 +73,13 @@ commandWords = {
     ("last", "previous", "go back"):spotify.previous_track,
     ("shuffle","randomize"):shuffleCheck,
     ("repeat", "loop"):repeatCheck,
-    ("play"): getSong
+    ("play album",): getAlbum,
+    ("play",): getSong,
 }
 
-
+words = None
 print("Finished Initializing!")
+
 
 #--Main-Loop---------------------------------------------------------------------------------------------------------------------------------------
 while True:
