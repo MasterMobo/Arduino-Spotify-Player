@@ -61,8 +61,8 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
 String inData;
 String message;
-String songName = "COCK";
-String artistName = "Balls";
+String songName = "";
+String artistName = "";
 
 const int WIDTH = 480;   // Screen width
 const int HEIGHT = 320;   // Screen height
@@ -74,7 +74,7 @@ const int progressBarYOffset = 256;
 const int buttonsYOffset = 189;
 
 
-long progress = 30000;
+long progress = 0;
 long duration = 60000;
 
 bool isPlaying = false;
