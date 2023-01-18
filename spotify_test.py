@@ -23,9 +23,9 @@ commands = {
     "next": spotify.next_track,
     "shuffleOn": lambda: spotify.shuffle(True),     # Using lambda because we want to return the function object, not execute it yet
     "shuffleOff": lambda: spotify.shuffle(False),
-    "repeatTrack": lambda: spotify.repeat("track"),
-    "repeatContext": lambda: spotify.repeat("context"),
-    "repeatOff": lambda: spotify.repeat("off")
+    "repeattrack": lambda: spotify.repeat("track"),
+    "repeatcontext": lambda: spotify.repeat("context"),
+    "repeatoff": lambda: spotify.repeat("off")
 }
 
 
@@ -43,6 +43,7 @@ def openPort():
 ser = None
 openPort()      
 
+
 #--Main-Loop---------------------------------------------------------------------------------------------------------------------------------------
 while True:
     # Get current song data from API
@@ -50,14 +51,17 @@ while True:
     
     if current_playback is None:
         print("Doesn't seem to be playing anything")
+        time.sleep(0.5)
         continue
     
-    print("Currently playing: " + current_playback["item"]["name"])
+    #print(f"Currently playing: " + current_playback["item"]["name"])
     
     # Send song data to Arduino via serial 
-    # Message format: songName > artistName @ isPlaying # progress $ duration % repeatState ^ shuffleState &
-    message = current_playback["item"]["name"] + ">" + ', '.join([artist["name"] for artist in current_playback["item"]["album"]["artists"]]) + "@" + ("1" if current_playback["is_playing"] else "0") + "#" + str(current_playback["progress_ms"]) + "$" + str(current_playback["item"]["duration_ms"]) + "%" + ("0" if current_playback["repeat_state"] == "off" else "1") + "^" + ("1" if current_playback["shuffle_state"] else "0") + "&"
-    # print(message) # Uncomment this to debug
+    # Message format: songName > artistName @ isPlaying # progress $ duration % repeatState ^ shuffleState |
+    message = current_playback["item"]["name"] + ">" + ', '.join([artist["name"] for artist in current_playback["item"]["album"]["artists"]]) + "@" + ("1" if current_playback["is_playing"] else "0") + "#" + str(current_playback["progress_ms"]) + "$" + str(current_playback["item"]["duration_ms"]) + "%" + current_playback["repeat_state"] + "^" + ("1" if current_playback["shuffle_state"] else "0") + "|"
+    #print(message) # Uncomment this to debug
+    
+
     ser.write(bytes(message, "utf-8"))
     
     
@@ -67,12 +71,12 @@ while True:
     if arduino_message in commands:
         print("Recieved message from arduino:", arduino_message)
     
-        # Send request to API corresponding to Arduino message
+        # Execute command corresponding to Arduino message
         try:
             commands[arduino_message]()
         except:
             print("Couldn't execute the command")
     
         
-    time.sleep(1)
+    time.sleep(0.5)
 
