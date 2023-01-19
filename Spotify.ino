@@ -58,6 +58,12 @@ MCUFRIEND_kbv tft;
 
 
 TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
+digitalWrite(13, HIGH);
+TSPoint p = ts.getPoint();
+digitalWrite(13, LOW);
+
+pinMode(XM, OUTPUT);
+pinMode(YP, OUTPUT);
 
 String inData;
 String message;
@@ -149,42 +155,12 @@ int scrollOffset = 0;
 
 
 void loop() {
-
       updateData();
-
-
-
-
-        //TOUCH CONTROL------------------------------------------------------------------------
-        digitalWrite(13, HIGH);
-        TSPoint p = ts.getPoint();
-        digitalWrite(13, LOW);
-
-        // if sharing pins, you'll need to fix the directions of the touchscreen pins
-        //pinMode(XP, OUTPUT);
-        pinMode(XM, OUTPUT);
-        pinMode(YP, OUTPUT);
-        //pinMode(YM, OUTPUT);
-
-        // we have some minimum pressure we consider 'valid'
-        // pressure of 0 means no pressing!
+    
+        //TOUCH CONTROL-----------------------------------------------------------------------
 
         if (p.z > MINPRESSURE && p.z < MAXPRESSURE)
         {
-          // Serial.println("===================================");
-          // Serial.println(p.x);
-          // Serial.println(p.y);
-          // Serial.println("===================================");
-
-          // //Quality check
-          // tft.setFont(&FreeSans12pt7b);
-          // tft.setTextSize(1); 
-          // tft.setTextColor(0xC618,0x0000);
-          // tft.setCursor(H_WIDTH - 40, H_HEIGHT - 20);
-          // tft.println(p.x);
-          // tft.println(p.y);
-
-
           //Play button
           if ((p.x > 430) && (p.x < 730) && (p.y>430) && (p.y<600)) {
             if (isPlaying){
@@ -232,18 +208,9 @@ void loop() {
             }
             delay(200);
           }
-
-
-
         }
-
-  // Update song data:
   
 //LCD CONTOL=====================================================================================================
-          // tft.fillRectVGradient(0, 0, 320, 240, tft.color565(10, 10, 7), tft.color565(26, 65, 1) );
-
-
-
           // Song name
           if (songName.length() <= 8)
           {
@@ -274,29 +241,15 @@ void loop() {
             tft.setCursor(23, 108);
             tft.println(artistName + "                        ");
 
-
-
-
-
-
-
           //Next Button
           tft.fillTriangle(nextButtonLineX - nextButtonLineLength + (nextButtonLineWidth / 2) + 2, buttonsYOffset - (nextButtonLineLength / 2), nextButtonLineX - nextButtonLineLength + (nextButtonLineWidth / 2) + 2, buttonsYOffset + (nextButtonLineLength / 2), nextButtonLineX + (nextButtonLineWidth / 2) + 2, buttonsYOffset, TFT_WHITE);
           tft.fillRect(nextButtonLineX, nextButtonLineY, nextButtonLineWidth, nextButtonLineLength, TFT_WHITE);
-
 
 
           //Previous Button
           tft.fillTriangle(previousButtonLineX + previousButtonLineLength, buttonsYOffset - (previousButtonLineLength / 2), previousButtonLineX + previousButtonLineLength, buttonsYOffset + (previousButtonLineLength / 2), previousButtonLineX, buttonsYOffset, TFT_WHITE);
           tft.fillRect(previousButtonLineX, previousButtonLineY, previousButtonLineWidth, previousButtonLineLength, TFT_WHITE);
 
-
-
-
-
-
-
-          
 
           // Song Progress
           tft.setTextSize(2); 
@@ -307,13 +260,11 @@ void loop() {
           printDigits((progress / 1000) % 60);
 
 
-
           // Song Duration
           tft.setCursor(WIDTH - 65, progressBarYOffset + 10);   //a digit is a 10X13 pixel
           tft.print((duration / 1000) / 60);
           tft.print(":");
           printDigits((duration / 1000) % 60);
-
 
 
           //Progress bar
@@ -324,24 +275,6 @@ void loop() {
           tft.fillRoundRect(xPos + 15, progressBarYOffset - (barWidth / 2), barLength - xPos, barWidth, barWidth / 2,TFT_DARKGREY);
           //progress bar
           tft.fillRoundRect(15, progressBarYOffset - (barWidth / 2), xPos + 5, barWidth, barWidth / 2, TFT_WHITE);
-
-
-
-          //Guide lines
-          // tft.fillRect(0,HEIGHT * 2 / 5,WIDTH,1, TFT_WHITE);
-          // tft.fillRect(0,189,WIDTH,1, TFT_WHITE);
-          // tft.fillRect(0,HEIGHT - (HEIGHT / 5),WIDTH,1, TFT_WHITE);
-          // tft.fillRect(0,HEIGHT - (HEIGHT / 5) + 10,WIDTH,1, TFT_WHITE);
-
-
-
-          // //Quality check
-          // tft.setFont(&FreeSans12pt7b);
-          // tft.setTextSize(1); 
-          // tft.setTextColor(0xC618,0x0000);
-          // tft.setCursor(H_WIDTH - 40, H_HEIGHT - 20);
-          // tft.print((3000 / 1000) % 60);
-
 }
 
 
