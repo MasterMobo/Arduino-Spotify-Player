@@ -11,8 +11,8 @@
 
 
 #include <MCUFRIEND_kbv.h>
+#include <Adafruit_GFX.h> 
 #include <TouchScreen.h>
-#include <Adafruit_GFX.h> // Hardware-specific library
 #include <Fonts/FreeSans12pt7b.h>
 
 #if defined(__SAM3X8E__)
