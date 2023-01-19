@@ -234,7 +234,6 @@ void loop() {
 
           }
 
-
           //Artist Name
             tft.setTextColor(0xC618,0x0000);  
             tft.setTextSize(3);
@@ -245,11 +244,9 @@ void loop() {
           tft.fillTriangle(nextButtonLineX - nextButtonLineLength + (nextButtonLineWidth / 2) + 2, buttonsYOffset - (nextButtonLineLength / 2), nextButtonLineX - nextButtonLineLength + (nextButtonLineWidth / 2) + 2, buttonsYOffset + (nextButtonLineLength / 2), nextButtonLineX + (nextButtonLineWidth / 2) + 2, buttonsYOffset, TFT_WHITE);
           tft.fillRect(nextButtonLineX, nextButtonLineY, nextButtonLineWidth, nextButtonLineLength, TFT_WHITE);
 
-
           //Previous Button
           tft.fillTriangle(previousButtonLineX + previousButtonLineLength, buttonsYOffset - (previousButtonLineLength / 2), previousButtonLineX + previousButtonLineLength, buttonsYOffset + (previousButtonLineLength / 2), previousButtonLineX, buttonsYOffset, TFT_WHITE);
           tft.fillRect(previousButtonLineX, previousButtonLineY, previousButtonLineWidth, previousButtonLineLength, TFT_WHITE);
-
 
           // Song Progress
           tft.setTextSize(2); 
@@ -259,18 +256,14 @@ void loop() {
           tft.print(":");
           printDigits((progress / 1000) % 60);
 
-
           // Song Duration
           tft.setCursor(WIDTH - 65, progressBarYOffset + 10);   //a digit is a 10X13 pixel
           tft.print((duration / 1000) / 60);
           tft.print(":");
           printDigits((duration / 1000) % 60);
 
-
           //Progress bar
           float xPos = barLength*progress/duration;
-          //refresh bar
-          // tft.fillRect(15,progressBarYOffset-10,barLength+5,20, TFT_BLACK);
           //background bar
           tft.fillRoundRect(xPos + 15, progressBarYOffset - (barWidth / 2), barLength - xPos, barWidth, barWidth / 2,TFT_DARKGREY);
           //progress bar
