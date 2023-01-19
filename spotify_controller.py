@@ -54,8 +54,6 @@ while True:
         time.sleep(0.5)
         continue
     
-    #print(f"Currently playing: " + current_playback["item"]["name"])
-    
     # Send song data to Arduino via serial 
     # Message format: songName > artistName @ isPlaying # progress $ duration % repeatState ^ shuffleState |
     try:
