@@ -8,6 +8,7 @@ This is where the code for our project is stored and managed throughout the proj
 For the Raspberyy Pi, there are 2 files:
   - spotify_controller.py (this script interacts with the Spotify API and send data to Arduino)
   - voice_reg.py (this scipt handles voice commands)
+
 For the Arduino UNO, there is 1 file:
   - Spotify.ino (this process data and controls the LCD)
   
