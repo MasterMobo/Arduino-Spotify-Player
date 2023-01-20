@@ -149,6 +149,7 @@ int repeatButtonThickness = 4;
 float barLength = WIDTH - 30;
 float barWidth = 10;
 
+// TEXT SCROLLING
 int scrollOffset = 0;
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -275,7 +276,8 @@ void loop() {
 // ADDITIONAL FUNCTIONS
 
 
-//Function to draw a diagonnal line:
+//Function to draw a diagonnal line
+
 void fillDiagonalLine(int startpointx, int startpointy, int length, int width, int angle, int color)
 {
   //Horizontal line coordinates
@@ -314,22 +316,43 @@ void fillDiagonalLine(int startpointx, int startpointy, int length, int width, i
   //Draws the diagonal line
   tft.fillTriangle(A1x - offsetx, A1y - offsety, B1x - offsetx, B1y - offsety, D1x - offsetx, D1y- offsety, color);
   tft.fillTriangle(D1x - offsetx, D1y - offsety, C1x - offsetx, C1y - offsety, B1x - offsetx, B1y - offsety, color);
-  //Quality check
-  // tft.setFont(&FreeSans12pt7b);
-  // tft.setTextSize(1); 
-  // tft.setTextColor(0xC618,0x0000);
-  // tft.setCursor(H_WIDTH - 40, H_HEIGHT - 20);
-  // tft.print(Ax);
-  // tft.print(" ");
-  // tft.print(Ay);
-  // tft.print(" ");
-  // tft.print(A1x);
-  // tft.print(" ");
-  // tft.print(A1y);
 }
 
-void updateData() {
 
+
+//Function to print 2-digits minutes and seconds
+
+void printDigits(int digits)
+{
+   if(digits < 10)
+    tft.print('0');
+   tft.print(digits);
+}
+
+
+
+//Function to scroll texts 
+
+void scrollText(String str, int w, int offset)
+{
+  // Set up
+  const int width = w; // Width of the marquee display (in characters)
+  
+  // Loop once through the string
+    // Construct the string to display for this iteration
+    String t = "";
+    for (int i = 0; i < width; i++)
+      t += str.charAt((offset + i) % str.length());
+      // Print the string for this iteration
+      tft.print(t);
+}
+
+
+
+//Function to update the data recieved from the Raspberry Pi
+
+void updateData() 
+{
   while(Serial.available() > 0){
     char recieved = Serial.read();
     inData += recieved;
@@ -389,39 +412,15 @@ void updateData() {
 }
 }
 
-//Function to print 2-digits minutes and seconds:
-void printDigits(int digits)
+
+
+// FUNCTIONS TO DRAW BUTTONS
+
+
+//Play button
+
+void fillPlayButton() 
 {
-  // utility function for digital clock display: prints leading 0
-   if(digits < 10)
-    tft.print('0');
-   tft.print(digits);
-}
-
-
-//Function to scroll texts while using retarded font
-void scrollText(String str, int w, int offset)
-{
-  // Set up
-  const int width = w; // width of the marquee display (in characters)
-  
-  // Loop once through the string
-
-  // Construct the string to display for this iteration
-    String t = "";
-
-    for (int i = 0; i < width; i++)
-      t += str.charAt((offset + i) % str.length());
-
-      // Print the string for this iteration
-      tft.print(t);
-
-
-}
-
-
-void fillPlayButton() {
-          //Play button
             //base circle
           tft.fillCircle(H_WIDTH, buttonsYOffset, 39, TFT_WHITE);
             if (!isPlaying)  //play bars
@@ -436,8 +435,12 @@ void fillPlayButton() {
 
 }
 
-void fillShuffleButton(){
-            //Shuffle button
+
+
+//Shuffle Button
+
+void fillShuffleButton()
+{
           if (!shuffleOn)
           {
             //refresh rect
@@ -509,8 +512,11 @@ void fillShuffleButton(){
 }
 
 
-void fillRepeatButton() {
-  //Repeat button
+
+//Repeat button
+
+void fillRepeatButton() 
+{
           if (repeatMode == "off")
           {
             //refresh rect
